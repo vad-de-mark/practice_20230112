@@ -22,8 +22,7 @@ public class SquashString {
     char prev = input.charAt(0);
     int counter = 0;
 
-    for (int i = 0; i < input.length(); ++i) {
-      char cur = input.charAt(i);
+    for (char cur : input.toCharArray()) {
       if (cur == prev) {
         ++counter;
         continue;

@@ -20,6 +20,7 @@ public class SudokuValidator {
     if (field == null) {
       return false;
     }
+    
     {
       // sizes
       boolean sizeCheck = field.length == 9;
@@ -30,45 +31,29 @@ public class SudokuValidator {
         return false;
       }
     }
+    
+    boolean[] digits = new boolean[9];
 
     {
       // rows
-      boolean[] digits = new boolean[9]; // digits[3] = true => already met the digit 4
       for (int row = 0; row < 9; ++row) {
         Arrays.fill(digits, false);
         for (int column = 0; column < 9; ++column) {
-          Integer cell = field[row][column];
-          if (cell == null) {
-            continue;
-          }
-          if (cell < 1 || cell > 9) {
+          if (!isValidCell(field[row][column], digits)) {
             return false;
           }
-          if (digits[cell - 1]) {
-            return false;
-          }
-          digits[cell - 1] = true;
         }
       }
     }
+    
     {
       // columns
-      boolean[] digits = new boolean[9]; // digits[3] = true => already met the digit 4
-
       for (int column = 0; column < 9; ++column) {
         Arrays.fill(digits, false);
         for (int row = 0; row < 9; ++row) {
-          Integer cell = field[row][column];
-          if (cell == null) {
-            continue;
-          }
-          if (cell < 1 || cell > 9) {
+          if (!isValidCell(field[row][column], digits)) {
             return false;
           }
-          if (digits[cell - 1]) {
-            return false;
-          }
-          digits[cell - 1] = true;
         }
       }
     }
@@ -77,26 +62,32 @@ public class SudokuValidator {
       // blocks
       for (int startBlockRow = 0; startBlockRow < 9; startBlockRow += 3) {
         for (int startBlockCol = 0; startBlockCol < 9; startBlockCol += 3) {
-          boolean[] digits = new boolean[9];
+          Arrays.fill(digits, false);
           for (int row = 0; row < 3; ++row) {
             for (int column = 0; column < 3; ++column) {
-              Integer cell = field[startBlockRow + row][startBlockCol + column];
-              if (cell == null) {
-                continue;
-              }
-              if (cell < 1 || cell > 9) {
+              if (!isValidCell(field[startBlockRow + row][startBlockCol + column], digits)) {
                 return false;
               }
-              if (digits[cell - 1]) {
-                return false;
-              }
-              digits[cell - 1] = true;
             }
           }
         }
       }
     }
 
+    return true;
+  }
+  
+  private static boolean isValidCell(Integer cell, boolean[] digits) {
+    if (cell == null) {
+      return true;
+    }
+    if (cell < 1 || cell > 9) {
+      return false;
+    }
+    if (digits[cell - 1]) {
+      return false;
+    }
+    digits[cell - 1] = true;
     return true;
   }
 }

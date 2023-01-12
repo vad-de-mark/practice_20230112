@@ -7,37 +7,7 @@ package edu.epam;
  * <p>
  * Re(c) = a Im(c) = b
  */
-public class ComplexNumber {
-
-  private final double re;
-  private final double im;
-
-  public ComplexNumber(double re, double im) {
-    this.re = re;
-    this.im = im;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (super.equals(obj)) {
-      return true;
-    }
-    if (obj == null || obj.getClass() != ComplexNumber.class) {
-      return false;
-    }
-
-    ComplexNumber c = (ComplexNumber) obj;
-    return Double.doubleToLongBits(re) == Double.doubleToLongBits(c.re)
-        && Double.doubleToLongBits(im) == Double.doubleToLongBits(c.im);
-  }
-
-  public double re() {
-    return this.re;
-  }
-
-  public double im() {
-    return im;
-  }
+public record ComplexNumber(double re, double im) {
 
   /**
    * r(c) = |c| = √(a²+b²)
@@ -67,10 +37,12 @@ public class ComplexNumber {
    */
   public ComplexNumber pow(int n) {
     double r = radius(),
-        phi = phi();
+        phi = phi(),
+        rn = Math.pow(r, n),
+        nphi = n * phi;
     return new ComplexNumber(
-        Math.pow(r, n) * Math.cos(n * phi),
-        Math.pow(r, n) * Math.sin(n * phi)
+        rn * Math.cos(nphi),
+        rn * Math.sin(nphi)
     );
   }
 
@@ -103,8 +75,6 @@ public class ComplexNumber {
    * ln(c) = ln(r) + i𝛗
    */
   public static ComplexNumber ln(ComplexNumber c) {
-    double r = c.radius(),
-        phi = c.phi();
-    return new ComplexNumber(Math.log(r), phi);
+    return new ComplexNumber(Math.log(c.radius()), c.phi());
   }
 }
